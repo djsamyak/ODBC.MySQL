@@ -40,7 +40,7 @@ void main()
 	cout << "Enter the query. \n";
 	cin.getline(s, 100);
 	cout << "\n";
-	lstrcpy((char *)query, s);
+	strcpy_s((char *)query,100, s);
 	SQLExecDirect(hstmt, query, SQL_NTS);
 
 	//7.Fetch Data
