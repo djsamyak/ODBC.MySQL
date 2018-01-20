@@ -22,9 +22,9 @@ void main()
 
 	//3. Allocating Connection Handle
 	SQLAllocHandle(SQL_HANDLE_DBC, henv, &hconn);
-	SQLCHAR* dsnName = (SQLCHAR*)"mysqldata";
-	SQLCHAR* userid = (SQLCHAR*)"Samyak";
-	SQLCHAR* password = (SQLCHAR*)"8672kn630";
+	SQLCHAR* dsnName = (SQLCHAR*)"		";
+	SQLCHAR* userid = (SQLCHAR*)"		";
+	SQLCHAR* password = (SQLCHAR*)"		";
 
 	//4. Opening DB Connection
 	SQLConnect(hconn, dsnName, SQL_NTS, userid, SQL_NTS, password, SQL_NTS);
