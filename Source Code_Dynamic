@@ -1,9 +1,6 @@
 #include<iostream>
-#include<stdio.h>
-#include<stdlib.h>
 #include<windows.h>
 #include<sql.h>
-#include<sqltypes.h>
 #include<sqlext.h>
 
 using namespace std;
@@ -14,40 +11,46 @@ void main()
 	SQLHANDLE hconn;
 	SQLHANDLE hstmt;
 
-	//1. Allocating Environment Handle
 	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
 
-	//2. Stating ODBC Version
 	SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*)SQL_OV_ODBC3, 0);
 
-	//3. Allocating Connection Handle
 	SQLAllocHandle(SQL_HANDLE_DBC, henv, &hconn);
-	SQLCHAR* dsnName = (SQLCHAR*)"		";
-	SQLCHAR* userid = (SQLCHAR*)"		";
-	SQLCHAR* password = (SQLCHAR*)"		";
+	SQLCHAR* dsnName = (SQLCHAR*)"mysqldata";
+	SQLCHAR* userid = (SQLCHAR*)"Samyak";
+	SQLCHAR* password = (SQLCHAR*)"8672kn630";
 
-	//4. Opening DB Connection
 	SQLConnect(hconn, dsnName, SQL_NTS, userid, SQL_NTS, password, SQL_NTS);
 
-	//5. Allocating Statement Handle
 	SQLAllocHandle(SQL_HANDLE_STMT, hconn, &hstmt);
 
-	//6. Querying
-
+	char ch;
+	cout << "Select Statment Type. \nPress 'm' for Modification. \nPress 'v' Viewing Mode \n \n";
+	cin >> ch;
+	cout << "\n";
+	
 	SQLCHAR * query;
 	query = new SQLCHAR;
 	char s[100];
+	cin.ignore(100, '\n');
 	cout << "Enter the query. \n";
 	cin.getline(s, 100);
 	cout << "\n";
-	strcpy_s((char *)query,100, s);
+	strcpy_s((char *)query, 100, s);
 	SQLExecDirect(hstmt, query, SQL_NTS);
 
-	//7.Fetch Data
 	SQLFetch(hstmt);
 	SQLLEN numRows;
 	SQLRowCount(hstmt, &numRows);
-	printf("%2d rows were fetched. \n", numRows);
+	if (ch == 'm')
+	{
+		printf("%2d rows were affected. \n", numRows);
+		goto term;
+	}
+	else
+	{
+		printf("%2d rows were fetched. \n", numRows);
+	}
 	SQLSMALLINT numCols;
 	SQLNumResultCols(hstmt, &numCols);
 	printf("%2d columns were fetched. \n", numCols);
@@ -55,7 +58,7 @@ void main()
 	SQLSMALLINT ColNameLen, DataType, NumDecimalDigit, AllowsNullValues;
 	SQLUINTEGER ColSize;
 	SQLCHAR colname[256];
-	for (int i = 1; i <= numCols; ++i) //Columns
+	for (int i = 1; i <= numCols; ++i) //Column Data
 	{
 		SQLDescribeColA(hstmt, i, colname, 255, &ColNameLen, &DataType, &ColSize, &NumDecimalDigit, &AllowsNullValues);
 		{
@@ -88,14 +91,17 @@ void main()
 		cout << "\n";
 	}
 
-	//8. Termination
+	term:
 	if (!SQL_SUCCEEDED(SQLFetch(hstmt)))
 	{
-		printf("Last row fetched. Program terminated. ");
+		printf("Fetch terminated. ");
 	}
 
-	//9. Free Up Resources
 	SQLFreeHandle(SQL_HANDLE_ENV, henv);
 	SQLFreeHandle(SQL_HANDLE_DBC, hconn);
 	SQLFreeHandle(SQL_HANDLE_ENV, hstmt);
+
+	SQLDisconnect(henv);
+	SQLDisconnect(hconn);
+	SQLDisconnect(hstmt);
 }
