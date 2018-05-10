@@ -87,15 +87,10 @@ void main()
 				{
 					SQLGetData(hstmt, j, SQL_C_CHAR, buffer, 511, &Bytes);
 					{
-						if (j == 4)
-						{
-							printf("%30s", buffer);
-						}
-						else
-							printf("%10s", buffer);
+						printf("%20s", buffer);
 					}
 				}
-				cout << "\n"; //New row break
+				cout << "\n";						 //New row break
 			}
 		}
 		cout << "\n";
